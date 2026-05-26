@@ -1,0 +1,24 @@
+name: 公众号定时推送
+on:
+  schedule:
+    - cron: '0 0 * * *'  # UTC 0点=北京时间8点推送
+  workflow_dispatch:  # 支持手动测试
+
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: 安装Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+      - name: 安装依赖
+        run: pip install -r requirements.txt
+      - name: 执行推送
+        env:
+          APPID: ${{ secrets.APPID }}
+          APPSECRET: ${{ secrets.APPSECRET }}
+          TEMPLATE_ID: ${{ secrets.TEMPLATE_ID }}
+          OPENID: ${{ secrets.OPENID }}
+        run: python main.py
